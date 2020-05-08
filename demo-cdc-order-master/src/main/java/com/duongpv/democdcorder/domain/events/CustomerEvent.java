@@ -1,4 +1,4 @@
-package com.duongpv.democdcorder.domain;
+package com.duongpv.democdcorder.domain.events;
 
 import java.io.Serializable;
 
