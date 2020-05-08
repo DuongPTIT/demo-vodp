@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Customer } from '../customer'
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
+import { config } from 'rxjs';
 
 @Component({
   selector: 'app-customer-form',
@@ -11,7 +12,13 @@ import { HttpHeaders } from '@angular/common/http';
 export class CustomerFormComponent implements OnInit {
 
   // constructor() { }
-  constructor(private http: HttpClient) { }
+  welcome : string;
+  notify : string;
+  customers : any
+  constructor(private http: HttpClient) { 
+    this.welcome = "List customer"
+    this.refrestTable();
+  }
 
   ngOnInit(): void {
   }
@@ -31,21 +38,30 @@ export class CustomerFormComponent implements OnInit {
 
   addCustomer() {
     console.log("chay ham gui");
-    const data = {'id': this.model.id, "name": this.model.name, "creditLimit": this.model.creditLimit, "company": this.model.company};
+    const data = {"name": this.model.name, "creditLimit": this.model.creditLimit, "company": this.model.company};
     console.log(data);
     const config = { headers: new HttpHeaders().set('Content-Type', 'application/json') };
-    this.http.post<Customer>('http://localhost:8081/customer/add', this.model, config).subscribe(myres => {
+    this.http.post<Customer>('http://localhost:8081/customer/create', data, config).subscribe(myres => {
       // this.postId = data.id;
-      this.model.creditLimit = this.model.creditLimit - Number(myres);
+      this.refrestTable();
     })
+ 
   }
 
-  addCustomer2(cus: Customer) {
-    console.log("Send customer");
-   
-    const config = { headers: new HttpHeaders().set('Content-Type', 'application/json') };
-    this.http.post<Customer>('http://localhost:8081/customer/add', cus, config).subscribe(data => {
-      // this.postId = data.id;
+
+
+  refrestNot() {
+    this.http.get<any>('http://localhost:8081/customer/newestrely').subscribe(response => {
+      // this.notify = response;
+      this.notify = response.msg;
+    })
+    console.log("refrest notify");
+  }
+
+
+  refrestTable() {
+    this.http.get<any>('http://localhost:8081/customer/').subscribe(data => {
+      this.customers = data;
     })
   }
 
